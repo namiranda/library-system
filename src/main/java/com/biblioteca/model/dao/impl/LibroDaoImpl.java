@@ -21,7 +21,12 @@ public class LibroDaoImpl implements LibroDAO {
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 libroDTO = new LibroDTO(
-                        rs.getInt("id")
+                        rs.getInt("id_libro"),
+                        rs.getString("titulo"),
+                        rs.getString("autor"),
+                        rs.getString("genero"),
+                        rs.getString("año"),
+                        rs.getString("estado")
                 );
             }
         } catch (SQLException e) {
@@ -39,10 +44,17 @@ public class LibroDaoImpl implements LibroDAO {
             final Connection connection = DBConexion.getInstance().getConnection();
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(query);
-            if (rs.next()) {
-                bookList.add(new LibroDTO(rs.getInt("id_libro")));
+            while (rs.next()) {
+                bookList.add(new LibroDTO(
+                        rs.getInt("id_libro"),
+                        rs.getString("titulo"),
+                        rs.getString("autor"),
+                        rs.getString("genero"),
+                        rs.getString("año"),
+                        rs.getString("estado")
+                ));
             }
-            System.out.println(bookList.toString());
+            System.out.println(bookList.toString()); //TODO: borrar
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -52,6 +64,22 @@ public class LibroDaoImpl implements LibroDAO {
 
     @Override
     public void insertBook(LibroDTO book) {
+        String query = "INSERT INTO libros (titulo, autor, genero, año, estado) values (?,?,?,?,?)";
+
+        try {
+            final Connection connection = DBConexion.getInstance().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1 , book.getTitulo());
+            statement.setString(2, book.getAutor());
+            statement.setString(3, book.getGenero());
+            statement.setString(4, book.getAnio());
+            statement.setString(5, book.getEstado());
+
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 

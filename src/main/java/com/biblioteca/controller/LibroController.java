@@ -15,4 +15,8 @@ public class LibroController {
     public List<LibroDTO> getAllBooks() {
         return service.getAllBooks();
     }
+
+    public void createBook(LibroDTO libro){
+        service.createBook(libro);
+    }
 }
