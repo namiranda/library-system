@@ -9,7 +9,7 @@ CREATE TABLE libros
     titulo   VARCHAR(255),
     autor    VARCHAR(255),
     genero   VARCHAR(255),
-    año      VARCHAR(255),
+    `año`    VARCHAR(255),
     estado   VARCHAR(255)
 );
 

@@ -16,7 +16,7 @@ public class LibroController {
         return service.getAllBooks();
     }
 
-    public void createBook(LibroDTO libro){
+    public void registrarLibro(LibroDTO libro){
         service.createBook(libro);
     }
 }

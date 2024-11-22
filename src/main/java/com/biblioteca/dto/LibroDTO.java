@@ -1,24 +1,18 @@
 package com.biblioteca.dto;
 
 public class LibroDTO {
-    private int id;
     private String titulo;
     private String autor;
     private String genero;
     private String anio;
     private String estado;
 
-    public LibroDTO(int id, String titulo, String autor, String genero, String anio, String estado) {
-        this.id = id;
+    public LibroDTO(String titulo, String autor, String genero, String anio, String estado) {
         this.titulo = titulo;
         this.autor = autor;
         this.genero = genero;
         this.anio = anio;
         this.estado = estado;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getTitulo() {
@@ -44,7 +38,6 @@ public class LibroDTO {
     @Override
     public String toString() {
         return "LibroDTO{" +
-                "id=" + id +
                 ", titulo='" + titulo + '\'' +
                 ", autor='" + autor + '\'' +
                 ", genero='" + genero + '\'' +
