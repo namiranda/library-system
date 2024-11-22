@@ -90,6 +90,6 @@ public class LibroDaoImpl implements LibroDAO {
 
     @Override
     public void deleteBook(int id) {
-
+        String query = "DELETE FROM libros where id = ?";
     }
 }
