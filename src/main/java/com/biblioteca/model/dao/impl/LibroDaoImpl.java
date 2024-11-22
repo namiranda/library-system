@@ -3,6 +3,7 @@ package com.biblioteca.model.dao.impl;
 import com.biblioteca.dto.LibroDTO;
 import com.biblioteca.model.dao.DBConexion;
 import com.biblioteca.model.dao.LibroDAO;
+import com.biblioteca.model.entity.Libro;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -11,16 +12,16 @@ import java.util.List;
 public class LibroDaoImpl implements LibroDAO {
 
     @Override
-    public LibroDTO getBookById(int id) {
-        String query =  "SELECT * FROM libros WHERE id = ?";
-        LibroDTO libroDTO = null;
+    public Libro getBookById(int id) {
+        String query =  "SELECT * FROM libros WHERE id_libro = ?";
+        Libro libro = null;
         try {
             final Connection connection = DBConexion.getInstance().getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, id);
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
-                libroDTO = new LibroDTO(
+                libro = new Libro(
                         rs.getInt("id_libro"),
                         rs.getString("titulo"),
                         rs.getString("autor"),
@@ -32,20 +33,20 @@ public class LibroDaoImpl implements LibroDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return libroDTO;
+        return libro;
     }
 
     @Override
-    public List<LibroDTO> getAllBooks() {
+    public List<Libro> getAllBooks() {
         String query = "SELECT * FROM libros";
-        List<LibroDTO> bookList = new ArrayList<>();
+        List<Libro> bookList = new ArrayList<>();
 
         try {
             final Connection connection = DBConexion.getInstance().getConnection();
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(query);
             while (rs.next()) {
-                bookList.add(new LibroDTO(
+                bookList.add(new Libro(
                         rs.getInt("id_libro"),
                         rs.getString("titulo"),
                         rs.getString("autor"),

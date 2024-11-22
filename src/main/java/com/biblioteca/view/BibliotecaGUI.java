@@ -1,22 +1,22 @@
 package com.biblioteca.view;
 
+import com.biblioteca.controller.LibroController;
+import com.biblioteca.dto.LibroDTO;
 import com.biblioteca.model.entity.Libro;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class BibliotecaGUI extends JFrame {
-    private List<Libro> libros;
+    private final LibroController libroController;
     private DefaultTableModel modeloTabla;
     private JTable tablaLibros;
     private JComboBox<String> filtroEstado;
 
-    public BibliotecaGUI() {
-        libros = new ArrayList<>();
+    public BibliotecaGUI(LibroController libroController) {
+        this.libroController = libroController;
         configurarVentana();
         inicializarComponentes();
     }
@@ -48,28 +48,33 @@ public class BibliotecaGUI extends JFrame {
         JTextField txtAnio = new JTextField(20);
 
         // Añadir componentes
-        gbc.gridx = 0; gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
         panel.add(new JLabel("Título:"), gbc);
         gbc.gridx = 1;
         panel.add(txtTitulo, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
         panel.add(new JLabel("Autor:"), gbc);
         gbc.gridx = 1;
         panel.add(txtAutor, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
         panel.add(new JLabel("Genero:"), gbc);
         gbc.gridx = 1;
         panel.add(txtGenero, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 3;
+        gbc.gridx = 0;
+        gbc.gridy = 3;
         panel.add(new JLabel("Año"), gbc);
         gbc.gridx = 1;
         panel.add(txtAnio, gbc);
 
         JButton btnRegistrar = new JButton("Registrar Libro");
-        gbc.gridx = 1; gbc.gridy = 4;
+        gbc.gridx = 1;
+        gbc.gridy = 4;
         panel.add(btnRegistrar, gbc);
 
         btnRegistrar.addActionListener(e -> {
@@ -78,15 +83,18 @@ public class BibliotecaGUI extends JFrame {
                 return;
             }
 
-            Libro libro = new Libro(
-
+            LibroDTO libro = new LibroDTO(
+                    txtTitulo.getText(), txtAutor.getText(), txtGenero.getText(), txtAnio.getText(), "DISPONIBLE"
             );
-            libros.add(libro);
+
+            libroController.registrarLibro(libro);
             // actualizarTablaLibros();
 
             // Limpiar campos
             txtTitulo.setText("");
             txtAutor.setText("");
+            txtGenero.setText("");
+            txtAnio.setText("");
 
 
             JOptionPane.showMessageDialog(this, "Libro registrado exitosamente");
@@ -157,9 +165,6 @@ public class BibliotecaGUI extends JFrame {
             return;
         }
 
-        String isbn = (String) tablaLibros.getValueAt(filaSeleccionada, 0);
-      //  Libro libro = buscarLibroPorISBN(isbn);
-
        // if (libro != null && libro.isDisponible()) {
        //     libro.setDisponible(false);
       //      actualizarTablaLibros();
@@ -176,16 +181,13 @@ public class BibliotecaGUI extends JFrame {
             return;
         }
 
-        //String isbn = (String) tablaLibros.getValueAt(filaSeleccionada, 0);
-       // Libro libro = buscarLibroPorISBN(isbn);
-
-      //  if (libro != null && !libro.isDisponible()) {
-       //     libro.setDisponible(true);
+        //  if (libro != null && !libro.isDisponible()) {
+        //     libro.setDisponible(true);
         //    actualizarTablaLibros();
         //    JOptionPane.showMessageDialog(this, "Devolución registrada exitosamente");
-       // } else {
-      //      JOptionPane.showMessageDialog(this, "El libro ya está disponible");
-      //  }
+        // } else {
+        //      JOptionPane.showMessageDialog(this, "El libro ya está disponible");
+        //  }
     }
 
 
