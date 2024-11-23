@@ -45,4 +45,14 @@ public class LibroDTO {
                 ", estado='" + estado + '\'' +
                 '}';
     }
+
+    public boolean isDisponible() {
+        return this.estado.equals("DISPONIBLE");
+    }
+
+    public void setDisponible() {
+        this.estado = "DISPONIBLE";
+    }
+
+
 }

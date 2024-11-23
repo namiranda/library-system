@@ -60,7 +60,7 @@ public class LibroDaoImpl implements LibroDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return bookList;
     }
 
     @Override

@@ -39,14 +39,6 @@ public class Libro {
         return estado;
     }
 
-    public boolean isDisponible() {
-        return this.estado == "DISPONIBLE";
-    }
-
-    public void setDisponible() {
-        this.estado = "DISPONIBLE";
-    }
-
     public LibroDTO toDTO(){
         return new LibroDTO(
                 this.titulo,

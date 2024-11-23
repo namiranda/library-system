@@ -17,10 +17,13 @@ public class LibroService {
     }
 
     public List<LibroDTO> getAllBooks() {
-        if(libroDAO.getAllBooks() == null) {
+        List<Libro> libros = libroDAO.getAllBooks();
+        if (libros == null) {
             return Collections.emptyList();
         }
-        return libroDAO.getAllBooks().stream().map(Libro::toDTO).toList();
+        return libros.stream()
+                .map(Libro::toDTO)
+                .toList();
     }
 
     public void createBook(LibroDTO libro) {

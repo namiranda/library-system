@@ -2,12 +2,12 @@ package com.biblioteca.view;
 
 import com.biblioteca.controller.LibroController;
 import com.biblioteca.dto.LibroDTO;
-import com.biblioteca.model.entity.Libro;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.util.List;
 
 public class BibliotecaGUI extends JFrame {
     private final LibroController libroController;
@@ -34,6 +34,7 @@ public class BibliotecaGUI extends JFrame {
         tabbedPane.addTab("Gestionar Préstamos", crearPanelPrestamos());
         tabbedPane.addTab("Consultar Libros", crearPanelConsulta());
         add(tabbedPane, BorderLayout.CENTER);
+        this.actualizarTablaLibros();
     }
 
     private JPanel crearPanelRegistro() {
@@ -88,7 +89,7 @@ public class BibliotecaGUI extends JFrame {
             );
 
             libroController.registrarLibro(libro);
-            // actualizarTablaLibros();
+            actualizarTablaLibros();
 
             // Limpiar campos
             txtTitulo.setText("");
@@ -107,7 +108,7 @@ public class BibliotecaGUI extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
 
         // Crear tabla de libros disponibles
-        String[] columnas = {"ISBN", "Título", "Autor", "Estado"};
+        String[] columnas = {"Título", "Autor", "Género", "Año", "Estado"};
         modeloTabla = new DefaultTableModel(columnas, 0);
         tablaLibros = new JTable(modeloTabla);
 
@@ -149,14 +150,22 @@ public class BibliotecaGUI extends JFrame {
         return panel;
     }
 
-//    private void actualizarTablaLibros() {
-//        modeloTabla.setRowCount(0);
-//        for (Libro libro : libros) {
-//            modeloTabla.addRow(new Object[]{
-//
-//            });
-//        }
-//    }
+
+    private void actualizarTablaLibros() {
+        List<LibroDTO> libros = libroController.getAllBooks();
+        System.out.println("libros:" + libros.toString());
+
+        modeloTabla.setRowCount(0);
+        for (LibroDTO libro : libros) {
+            modeloTabla.addRow(new Object[]{
+                    libro.getTitulo(),
+                    libro.getAutor(),
+                    libro.getGenero(),
+                    libro.getAnio(),
+                    libro.isDisponible() ? "Disponible" : "Prestado"
+            });
+        }
+    }
 
     private void registrarPrestamo() {
         int filaSeleccionada = tablaLibros.getSelectedRow();
