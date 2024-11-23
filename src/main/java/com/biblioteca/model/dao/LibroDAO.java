@@ -1,15 +1,15 @@
 package com.biblioteca.model.dao;
 
+import com.biblioteca.dto.NuevoLibroDTO;
 import com.biblioteca.dto.LibroDTO;
-import com.biblioteca.model.entity.Libro;
 
 import java.sql.SQLException;
 import java.util.List;
 
 public interface LibroDAO {
-    Libro getBookById(int id) throws SQLException;
-    List<Libro> getAllBooks();
-    void insertBook(LibroDTO book);
-    void updateBook(LibroDTO book);
+    LibroDTO getBookById(int id) throws SQLException;
+    List<LibroDTO> getAllBooks();
+    void insertBook(NuevoLibroDTO book);
+    void updateBook(NuevoLibroDTO book);
     void deleteBook(int id);
 }

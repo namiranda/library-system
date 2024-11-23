@@ -1,9 +1,9 @@
 package com.biblioteca.model.dao.impl;
 
-import com.biblioteca.dto.LibroDTO;
+import com.biblioteca.dto.NuevoLibroDTO;
 import com.biblioteca.model.dao.DBConexion;
 import com.biblioteca.model.dao.LibroDAO;
-import com.biblioteca.model.entity.Libro;
+import com.biblioteca.dto.LibroDTO;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,16 +12,16 @@ import java.util.List;
 public class LibroDaoImpl implements LibroDAO {
 
     @Override
-    public Libro getBookById(int id) {
+    public LibroDTO getBookById(int id) {
         String query =  "SELECT * FROM libros WHERE id_libro = ?";
-        Libro libro = null;
+        LibroDTO libro = null;
         try {
             final Connection connection = DBConexion.getInstance().getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, id);
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
-                libro = new Libro(
+                libro = new LibroDTO(
                         rs.getInt("id_libro"),
                         rs.getString("titulo"),
                         rs.getString("autor"),
@@ -37,16 +37,16 @@ public class LibroDaoImpl implements LibroDAO {
     }
 
     @Override
-    public List<Libro> getAllBooks() {
+    public List<LibroDTO> getAllBooks() {
         String query = "SELECT * FROM libros";
-        List<Libro> bookList = new ArrayList<>();
+        List<LibroDTO> bookList = new ArrayList<>();
 
         try {
             final Connection connection = DBConexion.getInstance().getConnection();
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(query);
             while (rs.next()) {
-                bookList.add(new Libro(
+                bookList.add(new LibroDTO(
                         rs.getInt("id_libro"),
                         rs.getString("titulo"),
                         rs.getString("autor"),
@@ -55,8 +55,6 @@ public class LibroDaoImpl implements LibroDAO {
                         rs.getString("estado")
                 ));
             }
-            System.out.println(bookList.toString()); //TODO: borrar
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -64,7 +62,7 @@ public class LibroDaoImpl implements LibroDAO {
     }
 
     @Override
-    public void insertBook(LibroDTO book) {
+    public void insertBook(NuevoLibroDTO book) {
         String query = "INSERT INTO libros (titulo, autor, genero, año, estado) values (?,?,?,?,?)";
 
         try {
@@ -85,7 +83,7 @@ public class LibroDaoImpl implements LibroDAO {
     }
 
     @Override
-    public void updateBook(LibroDTO book) {
+    public void updateBook(NuevoLibroDTO book) {
 
     }
 

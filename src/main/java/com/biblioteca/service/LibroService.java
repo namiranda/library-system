@@ -1,11 +1,10 @@
 package com.biblioteca.service;
 
-import com.biblioteca.dto.LibroDTO;
+import com.biblioteca.dto.NuevoLibroDTO;
 import com.biblioteca.model.dao.LibroDAO;
 import com.biblioteca.model.dao.impl.LibroDaoImpl;
-import com.biblioteca.model.entity.Libro;
+import com.biblioteca.dto.LibroDTO;
 
-import java.util.Collections;
 import java.util.List;
 
 public class LibroService {
@@ -17,16 +16,10 @@ public class LibroService {
     }
 
     public List<LibroDTO> getAllBooks() {
-        List<Libro> libros = libroDAO.getAllBooks();
-        if (libros == null) {
-            return Collections.emptyList();
-        }
-        return libros.stream()
-                .map(Libro::toDTO)
-                .toList();
+        return libroDAO.getAllBooks();
     }
 
-    public void createBook(LibroDTO libro) {
+    public void createBook(NuevoLibroDTO libro) {
         libroDAO.insertBook(libro);
     }
 }

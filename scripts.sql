@@ -19,7 +19,7 @@ CREATE TABLE prestamos
     id_prestamo      INT PRIMARY KEY AUTO_INCREMENT,
     id_libro         INT,
     estudiante       VARCHAR(255),
-    fecha_prestamo   DATE,
-    fecha_devolucion DATE,
+    fecha_prestamo   TIMESTAMP,
+    fecha_devolucion TIMESTAMP,
     FOREIGN KEY (id_libro) REFERENCES libros (id_libro)
 );

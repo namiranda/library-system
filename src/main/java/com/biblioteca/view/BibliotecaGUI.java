@@ -2,6 +2,7 @@ package com.biblioteca.view;
 
 import com.biblioteca.controller.LibroController;
 import com.biblioteca.dto.LibroDTO;
+import com.biblioteca.dto.NuevoLibroDTO;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -84,7 +85,7 @@ public class BibliotecaGUI extends JFrame {
                 return;
             }
 
-            LibroDTO libro = new LibroDTO(
+            NuevoLibroDTO libro = new NuevoLibroDTO(
                     txtTitulo.getText(), txtAutor.getText(), txtGenero.getText(), txtAnio.getText(), "DISPONIBLE"
             );
 
@@ -108,7 +109,7 @@ public class BibliotecaGUI extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
 
         // Crear tabla de libros disponibles
-        String[] columnas = {"Título", "Autor", "Género", "Año", "Estado"};
+        String[] columnas = {"ID","Título", "Autor", "Género", "Año", "Estado"};
         modeloTabla = new DefaultTableModel(columnas, 0);
         tablaLibros = new JTable(modeloTabla);
 
@@ -158,6 +159,7 @@ public class BibliotecaGUI extends JFrame {
         modeloTabla.setRowCount(0);
         for (LibroDTO libro : libros) {
             modeloTabla.addRow(new Object[]{
+                    libro.getId(),
                     libro.getTitulo(),
                     libro.getAutor(),
                     libro.getGenero(),
