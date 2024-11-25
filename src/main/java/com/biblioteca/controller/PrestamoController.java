@@ -7,11 +7,11 @@ public class PrestamoController {
 
     private PrestamoService prestamoService;
 
-    public PrestamoController(PrestamoService prestamoService) {
-        this.prestamoService = prestamoService;
+    public PrestamoController() {
+        this.prestamoService = new PrestamoService();
     }
 
     public void registrarPrestamo(PrestamoDTO prestamo) {
-
+        prestamoService.registarPrestamo(prestamo);
     }
 }

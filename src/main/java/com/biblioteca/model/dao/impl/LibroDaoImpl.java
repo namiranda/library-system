@@ -1,6 +1,7 @@
 package com.biblioteca.model.dao.impl;
 
 import com.biblioteca.dto.NuevoLibroDTO;
+import com.biblioteca.model.EstadoLibro;
 import com.biblioteca.model.dao.DBConexion;
 import com.biblioteca.model.dao.LibroDAO;
 import com.biblioteca.dto.LibroDTO;
@@ -72,7 +73,7 @@ public class LibroDaoImpl implements LibroDAO {
             statement.setString(2, book.getAutor());
             statement.setString(3, book.getGenero());
             statement.setString(4, book.getAnio());
-            statement.setString(5, book.getEstado());
+            statement.setString(5, book.getEstado().toString());
 
             statement.executeUpdate();
 
@@ -83,8 +84,20 @@ public class LibroDaoImpl implements LibroDAO {
     }
 
     @Override
-    public void updateBook(NuevoLibroDTO book) {
+    public void updateBook(int id, EstadoLibro estado) {
+        String query = "UPDATE libros SET estado=? WHERE id_libro=?;";
 
+        try {
+            final Connection connection = DBConexion.getInstance().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1 ,estado.toString());
+            statement.setInt(2, id);
+
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -11,7 +11,7 @@ import java.util.List;
 public class PrestamoDaoImpl implements PrestamoDAO {
     @Override
     public void insertPrestamo(PrestamoDTO prestamo) {
-        String query = "INSERT INTO prestamos (id_libro, estudiante, fecha_prestamo, fecha_devolucion) values (?,?,?,?)";
+        String query = "INSERT INTO prestamos (id_libro, estudiante, fecha_prestamo) values (?,?,?)";
 
         try {
             final Connection connection = DBConexion.getInstance().getConnection();
@@ -19,7 +19,6 @@ public class PrestamoDaoImpl implements PrestamoDAO {
             statement.setInt(1, prestamo.getIdLibro());
             statement.setString(2, prestamo.getEstudiante());
             statement.setTimestamp(3, Timestamp.from(prestamo.getFechaPrestamo()));
-            statement.setTimestamp(4, Timestamp.from(prestamo.getFechDevolucion()));
 
             statement.executeUpdate();
 
