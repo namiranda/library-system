@@ -3,11 +3,15 @@ package com.biblioteca.view;
 import com.biblioteca.controller.LibroController;
 import com.biblioteca.dto.LibroDTO;
 import com.biblioteca.dto.NuevoLibroDTO;
+import com.biblioteca.dto.PrestamoDTO;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.time.Instant;
 import java.util.List;
 
 public class BibliotecaGUI extends JFrame {
@@ -109,7 +113,7 @@ public class BibliotecaGUI extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
 
         // Crear tabla de libros disponibles
-        String[] columnas = {"ID","Título", "Autor", "Género", "Año", "Estado"};
+        String[] columnas = {"ID", "Título", "Autor", "Género", "Año", "Estado"};
         modeloTabla = new DefaultTableModel(columnas, 0);
         tablaLibros = new JTable(modeloTabla);
 
@@ -147,7 +151,15 @@ public class BibliotecaGUI extends JFrame {
         panel.add(scrollPane, BorderLayout.CENTER);
 
         filtroEstado.addActionListener(e -> aplicarFiltro());
-
+        tablaLibros.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 1) { // Double click
+                    int idLibroSeleccionado = getIdLibro();
+                    PrestamoDTO prestamo = new PrestamoDTO(idLibroSeleccionado, "Juan", Instant.now(), null);
+                }
+            }
+        });
         return panel;
     }
 
@@ -176,13 +188,13 @@ public class BibliotecaGUI extends JFrame {
             return;
         }
 
-       // if (libro != null && libro.isDisponible()) {
-       //     libro.setDisponible(false);
-      //      actualizarTablaLibros();
-       //     JOptionPane.showMessageDialog(this, "Préstamo registrado exitosamente");
-      //  } else {
-      //      JOptionPane.showMessageDialog(this, "El libro no está disponible para préstamo");
-      //  }
+        // if (libro != null && libro.isDisponible()) {
+        //     libro.setDisponible(false);
+        //      actualizarTablaLibros();
+        //     JOptionPane.showMessageDialog(this, "Préstamo registrado exitosamente");
+        //  } else {
+        //      JOptionPane.showMessageDialog(this, "El libro no está disponible para préstamo");
+        //  }
     }
 
     private void registrarDevolucion() {
@@ -212,6 +224,19 @@ public class BibliotecaGUI extends JFrame {
         } else {
             sorter.setRowFilter(null);
         }
+    }
+
+    private int getIdLibro() {
+        int selectedRow = tablaLibros.getSelectedRow();
+
+        if (selectedRow == -1) {
+            throw new IllegalStateException("No row selected");
+        }
+
+        int modelRow = tablaLibros.convertRowIndexToModel(selectedRow);
+
+        String id = tablaLibros.getModel().getValueAt(modelRow, 0).toString();
+        return Integer.parseInt(id);
     }
 
 
