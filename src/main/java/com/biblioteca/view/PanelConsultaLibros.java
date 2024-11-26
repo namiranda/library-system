@@ -88,25 +88,29 @@ public class PanelConsultaLibros extends JPanel implements Observer {
 
         // Crear diálogo de préstamo
         JDialog dialogPrestamo = new JDialog(parentFrame, "Solicitar Préstamo", true);
-        dialogPrestamo.setLayout(new GridLayout(0, 2, 10, 10));
-        dialogPrestamo.setSize(300, 250);
-        dialogPrestamo.setLocationRelativeTo(this);
+        dialogPrestamo.setLayout(new BorderLayout(10, 10));
 
-        // Campos para el préstamo
-        dialogPrestamo.add(new JLabel("Libro:"));
-        dialogPrestamo.add(new JLabel(libroSeleccionado.getTitulo()));
+        JPanel mainPanel = new JPanel(new GridLayout(0, 2, 10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        dialogPrestamo.add(new JLabel("Nombre del Solicitante:"));
+        mainPanel.add(new JLabel("Libro:"));
+        mainPanel.add(new JLabel(libroSeleccionado.getTitulo()));
+
+        mainPanel.add(new JLabel("Nombre del Solicitante:"));
         JTextField txtNombreSolicitante = new JTextField();
-        dialogPrestamo.add(txtNombreSolicitante);
+        mainPanel.add(txtNombreSolicitante);
 
-        dialogPrestamo.add(new JLabel("Fecha de Préstamo:"));
+        mainPanel.add(new JLabel("Fecha de Préstamo:"));
         JTextField txtFechaPrestamo = new JTextField(LocalDate.now().toString());
         txtFechaPrestamo.setEditable(false);
-        dialogPrestamo.add(txtFechaPrestamo);
+        mainPanel.add(txtFechaPrestamo);
 
-        // Botón de confirmar
-        JButton btnConfirmar = new JButton("Confirmar Préstamo");
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton btnConfirmar = new JButton("Confirmar");
+        JButton btnCancelar = new JButton("Cancelar");
+        buttonPanel.add(btnCancelar);
+        buttonPanel.add(btnConfirmar);
+
         btnConfirmar.addActionListener(evt -> {
             // Aquí implementarías la lógica para guardar el préstamo
             String nombreSolicitante = txtNombreSolicitante.getText();
@@ -131,13 +135,13 @@ public class PanelConsultaLibros extends JPanel implements Observer {
 
             dialogPrestamo.dispose();
         });
-        dialogPrestamo.add(btnConfirmar);
-
-        // Botón de cancelar
-        JButton btnCancelar = new JButton("Cancelar");
         btnCancelar.addActionListener(evt -> dialogPrestamo.dispose());
-        dialogPrestamo.add(btnCancelar);
 
+        dialogPrestamo.add(mainPanel, BorderLayout.CENTER);
+        dialogPrestamo.add(buttonPanel, BorderLayout.SOUTH);
+
+        dialogPrestamo.pack();
+        dialogPrestamo.setLocationRelativeTo(parentFrame);
         dialogPrestamo.setVisible(true);
     }
 
