@@ -40,8 +40,4 @@ public class LibroDTO {
     public String getEstado() {
         return estado;
     }
-
-    public boolean isDisponible() {
-        return this.estado.equals("DISPONIBLE");
-    }
 }

@@ -186,7 +186,7 @@ public class PanelConsultaLibros extends JPanel implements Observer {
                     libro.getAutor(),
                     libro.getGenero(),
                     libro.getAnio(),
-                    libro.isDisponible() ? "Disponible" : "Prestado"
+                    libro.getEstado()
             });
         }
     }

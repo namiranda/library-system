@@ -36,7 +36,7 @@ public class PanelPrestamosHistoricos extends JPanel implements Observer {
         modeloTablaPrestamos.setRowCount(0);
         for (PrestamoDTO prestamo : prestamos) {
             modeloTablaPrestamos.addRow(new Object[]{
-                    prestamo.getId(),
+                    prestamo.getIdLibro(),
                     prestamo.getEstudiante(),
                     prestamo.getFechaPrestamo(),
                     prestamo.getFechDevolucion()
