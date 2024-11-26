@@ -1,13 +1,15 @@
 package com.biblioteca.dto;
 
+import com.biblioteca.model.EstadoLibro;
+
 public class NuevoLibroDTO {
     private String titulo;
     private String autor;
     private String genero;
     private String anio;
-    private String estado;
+    private EstadoLibro estado;
 
-    public NuevoLibroDTO(String titulo, String autor, String genero, String anio, String estado) {
+    public NuevoLibroDTO(String titulo, String autor, String genero, String anio, EstadoLibro estado) {
         this.titulo = titulo;
         this.autor = autor;
         this.genero = genero;
@@ -31,7 +33,7 @@ public class NuevoLibroDTO {
         return anio;
     }
 
-    public String getEstado() {
+    public EstadoLibro getEstado() {
         return estado;
     }
 

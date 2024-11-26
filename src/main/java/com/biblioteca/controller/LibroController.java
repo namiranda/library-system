@@ -2,6 +2,7 @@ package com.biblioteca.controller;
 
 import com.biblioteca.dto.LibroDTO;
 import com.biblioteca.dto.NuevoLibroDTO;
+import com.biblioteca.model.EstadoLibro;
 import com.biblioteca.service.LibroService;
 
 import java.util.List;
@@ -20,5 +21,9 @@ public class LibroController {
 
     public void registrarLibro(NuevoLibroDTO libro){
         service.createBook(libro);
+    }
+
+    public void updateEstadoLibro(int id, EstadoLibro estado){
+        service.updateEstadoLibro(id, estado);
     }
 }

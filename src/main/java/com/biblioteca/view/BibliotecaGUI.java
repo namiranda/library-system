@@ -1,23 +1,30 @@
 package com.biblioteca.view;
 
 import com.biblioteca.controller.LibroController;
+import com.biblioteca.controller.PrestamoController;
 import com.biblioteca.dto.LibroDTO;
 import com.biblioteca.dto.NuevoLibroDTO;
+import com.biblioteca.dto.PrestamoDTO;
+import com.biblioteca.model.EstadoLibro;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 public class BibliotecaGUI extends JFrame {
     private final LibroController libroController;
+    private final PrestamoController prestamoController;
     private DefaultTableModel modeloTabla;
     private JTable tablaLibros;
     private JComboBox<String> filtroEstado;
 
-    public BibliotecaGUI(LibroController libroController) {
+    public BibliotecaGUI(LibroController libroController, PrestamoController prestamoController) {
         this.libroController = libroController;
+        this.prestamoController = prestamoController;
         configurarVentana();
         inicializarComponentes();
     }
@@ -32,8 +39,9 @@ public class BibliotecaGUI extends JFrame {
     private void inicializarComponentes() {
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Registrar Libro", crearPanelRegistro());
-        tabbedPane.addTab("Gestionar Préstamos", crearPanelPrestamos());
         tabbedPane.addTab("Consultar Libros", crearPanelConsulta());
+        tabbedPane.addTab("Préstamos Históricos", crearPanelPrestamos());
+
         add(tabbedPane, BorderLayout.CENTER);
         this.actualizarTablaLibros();
     }
@@ -86,7 +94,7 @@ public class BibliotecaGUI extends JFrame {
             }
 
             NuevoLibroDTO libro = new NuevoLibroDTO(
-                    txtTitulo.getText(), txtAutor.getText(), txtGenero.getText(), txtAnio.getText(), "DISPONIBLE"
+                    txtTitulo.getText(), txtAutor.getText(), txtGenero.getText(), txtAnio.getText(), EstadoLibro.DISPONIBLE
             );
 
             libroController.registrarLibro(libro);
@@ -108,31 +116,18 @@ public class BibliotecaGUI extends JFrame {
     private JPanel crearPanelPrestamos() {
         JPanel panel = new JPanel(new BorderLayout());
 
-        // Crear tabla de libros disponibles
-        String[] columnas = {"ID","Título", "Autor", "Género", "Año", "Estado"};
-        modeloTabla = new DefaultTableModel(columnas, 0);
-        tablaLibros = new JTable(modeloTabla);
-
-        JScrollPane scrollPane = new JScrollPane(tablaLibros);
-        panel.add(scrollPane, BorderLayout.CENTER);
-
-        // Panel de botones
-        JPanel panelBotones = new JPanel();
-        JButton btnPrestar = new JButton("Registrar Préstamo");
-        JButton btnDevolver = new JButton("Registrar Devolución");
-
-        btnPrestar.addActionListener(e -> registrarPrestamo());
-        btnDevolver.addActionListener(e -> registrarDevolucion());
-
-        panelBotones.add(btnPrestar);
-        panelBotones.add(btnDevolver);
-        panel.add(panelBotones, BorderLayout.SOUTH);
-
         return panel;
     }
 
     private JPanel crearPanelConsulta() {
         JPanel panel = new JPanel(new BorderLayout());
+
+        // Crear tabla de libros disponibles
+        String[] columnas = {"ID", "Título", "Autor", "Género", "Año", "Estado"};
+        modeloTabla = new DefaultTableModel(columnas, 0);
+        tablaLibros = new JTable(modeloTabla);
+        JScrollPane scrollPane = new JScrollPane(tablaLibros);
+        panel.add(scrollPane, BorderLayout.CENTER);
 
         // Panel superior para filtros
         JPanel panelFiltros = new JPanel();
@@ -142,13 +137,99 @@ public class BibliotecaGUI extends JFrame {
 
         panel.add(panelFiltros, BorderLayout.NORTH);
 
-        // Tabla de libros
-        JScrollPane scrollPane = new JScrollPane(tablaLibros);
-        panel.add(scrollPane, BorderLayout.CENTER);
+        // Panel inferior con botones
+        JPanel panelBotones = new JPanel(new FlowLayout());
+        JButton btnSolicitarPrestamo = new JButton("Solicitar Préstamo");
+        JButton btnGestionarDevolucion = new JButton("Gestionar Devolución");
 
+        // Inicialmente deshabilitar los botones
+        btnSolicitarPrestamo.setEnabled(false);
+        btnGestionarDevolucion.setEnabled(false);
+
+        panelBotones.add(btnSolicitarPrestamo);
+        panelBotones.add(btnGestionarDevolucion);
+        panel.add(panelBotones, BorderLayout.SOUTH);
+
+        // Listener para habilitar/deshabilitar botones cuando se selecciona una fila
+        tablaLibros.getSelectionModel().addListSelectionListener(e -> {
+            boolean filaSeleccionada = tablaLibros.getSelectedRow() != -1;
+            btnSolicitarPrestamo.setEnabled(filaSeleccionada);
+            btnGestionarDevolucion.setEnabled(filaSeleccionada);
+        });
+
+        // Listener para el filtro de estado
         filtroEstado.addActionListener(e -> aplicarFiltro());
 
+        // Listener para solicitar préstamo
+        btnSolicitarPrestamo.addActionListener(e -> mostrarFormularioPrestamo());
+
+        // Listener para gestionar devolución
+        btnGestionarDevolucion.addActionListener(e -> mostrarFormularioDevolucion());
+
         return panel;
+    }
+
+    private void mostrarFormularioPrestamo() {
+        LibroDTO libroSeleccionado = getSelectedBook();
+
+        // Crear diálogo de préstamo
+        JDialog dialogPrestamo = new JDialog(this, "Solicitar Préstamo", true);
+        dialogPrestamo.setLayout(new GridLayout(0, 2, 10, 10));
+        dialogPrestamo.setSize(300, 250);
+        dialogPrestamo.setLocationRelativeTo(this);
+
+        // Campos para el préstamo
+        dialogPrestamo.add(new JLabel("Libro:"));
+        dialogPrestamo.add(new JLabel(libroSeleccionado.getTitulo()));
+
+        dialogPrestamo.add(new JLabel("Nombre del Solicitante:"));
+        JTextField txtNombreSolicitante = new JTextField();
+        dialogPrestamo.add(txtNombreSolicitante);
+
+        dialogPrestamo.add(new JLabel("Fecha de Préstamo:"));
+        JTextField txtFechaPrestamo = new JTextField(LocalDate.now().toString());
+        txtFechaPrestamo.setEditable(false);
+        dialogPrestamo.add(txtFechaPrestamo);
+
+        // Botón de confirmar
+        JButton btnConfirmar = new JButton("Confirmar Préstamo");
+        btnConfirmar.addActionListener(evt -> {
+            // Aquí implementarías la lógica para guardar el préstamo
+            String nombreSolicitante = txtNombreSolicitante.getText();
+
+            if (nombreSolicitante.isEmpty()) {
+                JOptionPane.showMessageDialog(dialogPrestamo,
+                        "Por favor complete todos los campos",
+                        "Campos Incompletos",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            PrestamoDTO prestamo = new PrestamoDTO(
+                    libroSeleccionado.getId(),
+                    nombreSolicitante,
+                    Instant.now(),
+                    null
+            );
+
+            prestamoController.registrarPrestamo(prestamo);
+            libroController.updateEstadoLibro(libroSeleccionado.getId(), EstadoLibro.PRESTADO);
+
+            dialogPrestamo.dispose();
+        });
+        dialogPrestamo.add(btnConfirmar);
+
+        // Botón de cancelar
+        JButton btnCancelar = new JButton("Cancelar");
+        btnCancelar.addActionListener(evt -> dialogPrestamo.dispose());
+        dialogPrestamo.add(btnCancelar);
+
+        dialogPrestamo.setVisible(true);
+    }
+
+    private void mostrarFormularioDevolucion() {
+
+        JOptionPane.showMessageDialog(this, "Funcionalidad de devolución pendiente de implementación");
     }
 
 
@@ -169,49 +250,36 @@ public class BibliotecaGUI extends JFrame {
         }
     }
 
-    private void registrarPrestamo() {
-        int filaSeleccionada = tablaLibros.getSelectedRow();
-        if (filaSeleccionada == -1) {
-            JOptionPane.showMessageDialog(this, "Por favor, seleccione un libro");
-            return;
-        }
-
-       // if (libro != null && libro.isDisponible()) {
-       //     libro.setDisponible(false);
-      //      actualizarTablaLibros();
-       //     JOptionPane.showMessageDialog(this, "Préstamo registrado exitosamente");
-      //  } else {
-      //      JOptionPane.showMessageDialog(this, "El libro no está disponible para préstamo");
-      //  }
-    }
-
-    private void registrarDevolucion() {
-        int filaSeleccionada = tablaLibros.getSelectedRow();
-        if (filaSeleccionada == -1) {
-            JOptionPane.showMessageDialog(this, "Por favor, seleccione un libro");
-            return;
-        }
-
-        //  if (libro != null && !libro.isDisponible()) {
-        //     libro.setDisponible(true);
-        //    actualizarTablaLibros();
-        //    JOptionPane.showMessageDialog(this, "Devolución registrada exitosamente");
-        // } else {
-        //      JOptionPane.showMessageDialog(this, "El libro ya está disponible");
-        //  }
-    }
-
-
     private void aplicarFiltro() {
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(modeloTabla);
         tablaLibros.setRowSorter(sorter);
 
         String filtro = (String) filtroEstado.getSelectedItem();
         if (!"Todos".equals(filtro)) {
-            sorter.setRowFilter(RowFilter.regexFilter(filtro, 3));
+            sorter.setRowFilter(RowFilter.regexFilter(filtro, 5));
         } else {
             sorter.setRowFilter(null);
         }
+    }
+
+    private LibroDTO getSelectedBook() {
+        int selectedRow = tablaLibros.getSelectedRow();
+
+        if (selectedRow == -1) {
+            throw new IllegalStateException("No row selected");
+        }
+
+        int modelRow = tablaLibros.convertRowIndexToModel(selectedRow);
+
+        String id = tablaLibros.getModel().getValueAt(modelRow, 0).toString();
+        String titulo = tablaLibros.getModel().getValueAt(modelRow, 1).toString();
+        String autor = tablaLibros.getModel().getValueAt(modelRow, 2).toString();
+        String genero = tablaLibros.getModel().getValueAt(modelRow, 3).toString();
+        String anio = tablaLibros.getModel().getValueAt(modelRow, 4).toString();
+        String estado = tablaLibros.getModel().getValueAt(modelRow, 5).toString();
+        return new LibroDTO(
+                Integer.parseInt(id), titulo, autor, genero, anio, estado
+        );
     }
 
 
