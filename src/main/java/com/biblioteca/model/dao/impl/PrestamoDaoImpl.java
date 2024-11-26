@@ -9,6 +9,7 @@ import java.sql.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class PrestamoDaoImpl implements PrestamoDAO {
     @Override
@@ -44,7 +45,9 @@ public class PrestamoDaoImpl implements PrestamoDAO {
                         rs.getInt("id_libro"),
                         rs.getString("estudiante"),
                         rs.getTimestamp("fecha_prestamo").toInstant(),
-                        rs.getTimestamp("fecha_devolucion").toInstant()
+                        Optional.ofNullable(rs.getTimestamp("fecha_devolucion"))
+                                .map(Timestamp::toInstant)
+                                .orElse(null)
                 ));
             }
         } catch (SQLException e) {
