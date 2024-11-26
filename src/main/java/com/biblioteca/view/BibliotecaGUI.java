@@ -117,6 +117,23 @@ public class BibliotecaGUI extends JFrame {
     private JPanel crearPanelPrestamos() {
         JPanel panel = new JPanel(new BorderLayout());
 
+        // Crear tabla de prestamos historicos
+        String[] columnas = {"Id libro","Estudiante", "Fecha Prestámo", "Fecha Devolución"};
+        DefaultTableModel modeloTablaPrestamos = new DefaultTableModel(columnas, 0);
+        JTable tablaPrestamos = new JTable(modeloTablaPrestamos);
+        JScrollPane scrollPane = new JScrollPane(tablaPrestamos);
+        panel.add(scrollPane, BorderLayout.CENTER);
+
+        List<PrestamoDTO> prestamos = prestamoController.getHistoricoPrestamos();
+        for (PrestamoDTO prestamo : prestamos) {
+            modeloTablaPrestamos.addRow(new Object[]{
+                    prestamo.getId(),
+                    prestamo.getEstudiante(),
+                    prestamo.getFechaPrestamo(),
+                    prestamo.getFechDevolucion()
+            });
+        }
+
         return panel;
     }
 

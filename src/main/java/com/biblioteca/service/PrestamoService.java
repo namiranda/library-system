@@ -5,6 +5,8 @@ import com.biblioteca.dto.PrestamoDTO;
 import com.biblioteca.model.dao.PrestamoDAO;
 import com.biblioteca.model.dao.impl.PrestamoDaoImpl;
 
+import java.util.List;
+
 public class PrestamoService {
 
     private final PrestamoDAO prestamoDAO;
@@ -23,5 +25,9 @@ public class PrestamoService {
 
     public void registrarDevolucion(int idPrestamo) {
         prestamoDAO.update(idPrestamo);
+    }
+
+    public List<PrestamoDTO> getHistoricoPrestamos() {
+        return prestamoDAO.getAll();
     }
 }

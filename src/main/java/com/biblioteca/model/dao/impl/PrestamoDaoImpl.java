@@ -1,6 +1,5 @@
 package com.biblioteca.model.dao.impl;
 
-import com.biblioteca.dto.LibroDTO;
 import com.biblioteca.dto.NuevoPrestamoDTO;
 import com.biblioteca.model.dao.DBConexion;
 import com.biblioteca.model.dao.PrestamoDAO;
@@ -8,6 +7,7 @@ import com.biblioteca.dto.PrestamoDTO;
 
 import java.sql.*;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PrestamoDaoImpl implements PrestamoDAO {
@@ -31,7 +31,26 @@ public class PrestamoDaoImpl implements PrestamoDAO {
 
     @Override
     public List<PrestamoDTO> getAll() {
-        return null;
+        String query = "SELECT * FROM prestamos";
+        List<PrestamoDTO> listaPrestamos = new ArrayList<>();
+
+        try {
+            final Connection connection = DBConexion.getInstance().getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(query);
+            while (rs.next()) {
+                listaPrestamos.add(new PrestamoDTO(
+                        rs.getInt("id_prestamo"),
+                        rs.getInt("id_libro"),
+                        rs.getString("estudiante"),
+                        rs.getTimestamp("fecha_prestamo").toInstant(),
+                        rs.getTimestamp("fecha_devolucion").toInstant()
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return listaPrestamos;
     }
 
     @Override
