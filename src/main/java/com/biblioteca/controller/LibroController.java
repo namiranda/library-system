@@ -9,7 +9,7 @@ import java.util.List;
 
 
 public class LibroController {
-    private LibroService service;
+    private final LibroService service;
 
     public LibroController(){
         service = new LibroService();

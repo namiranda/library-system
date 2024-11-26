@@ -4,6 +4,7 @@ import com.biblioteca.controller.LibroController;
 import com.biblioteca.controller.PrestamoController;
 import com.biblioteca.dto.LibroDTO;
 import com.biblioteca.dto.NuevoLibroDTO;
+import com.biblioteca.dto.NuevoPrestamoDTO;
 import com.biblioteca.dto.PrestamoDTO;
 import com.biblioteca.model.EstadoLibro;
 
@@ -205,7 +206,7 @@ public class BibliotecaGUI extends JFrame {
                 return;
             }
 
-            PrestamoDTO prestamo = new PrestamoDTO(
+            NuevoPrestamoDTO prestamo = new NuevoPrestamoDTO(
                     libroSeleccionado.getId(),
                     nombreSolicitante,
                     Instant.now(),
@@ -228,8 +229,14 @@ public class BibliotecaGUI extends JFrame {
     }
 
     private void mostrarFormularioDevolucion() {
+        LibroDTO libroSeleccionado = getSelectedBook();
 
-        JOptionPane.showMessageDialog(this, "Funcionalidad de devolución pendiente de implementación");
+        PrestamoDTO prestamo = prestamoController.getPrestamoByLibroId(libroSeleccionado.getId());
+
+        JOptionPane.showMessageDialog(this, "Confirmar la devolucion de " + prestamo.getEstudiante());
+
+        prestamoController.registrarDevolucion(prestamo.getId());
+        libroController.updateEstadoLibro(libroSeleccionado.getId(), EstadoLibro.DISPONIBLE);
     }
 
 

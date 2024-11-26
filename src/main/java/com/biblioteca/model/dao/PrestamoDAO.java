@@ -1,16 +1,18 @@
 package com.biblioteca.model.dao;
 
+import com.biblioteca.dto.NuevoPrestamoDTO;
 import com.biblioteca.dto.PrestamoDTO;
-import com.biblioteca.model.entity.Prestamo;
 
 import java.sql.Date;
+import java.time.Instant;
 import java.util.List;
 
 public interface PrestamoDAO {
-    void insertPrestamo(PrestamoDTO prestamoDTO);
+    void insert(NuevoPrestamoDTO nuevoPrestamoDTO);
 
-    List<Prestamo> getPrestamosHistorico();
+    List<PrestamoDTO> getAll();
 
-    void updatePrestamo(int prestamoId, Date fechaDevolucion);
+    void update(int prestamoId);
 
+    PrestamoDTO getLastByLibroId(int idLibro);
 }

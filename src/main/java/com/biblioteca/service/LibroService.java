@@ -10,7 +10,7 @@ import java.util.List;
 
 public class LibroService {
 
-    private LibroDAO libroDAO;
+    private final LibroDAO libroDAO;
 
     public LibroService() {
         libroDAO = new LibroDaoImpl();

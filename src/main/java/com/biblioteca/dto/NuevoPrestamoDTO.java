@@ -1,25 +1,18 @@
-package com.biblioteca.model.entity;
+package com.biblioteca.dto;
 
 import java.time.Instant;
-import java.util.Date;
 
-public class Prestamo {
-    private int id;
+public class NuevoPrestamoDTO {
     private int idLibro;
     private String estudiante;
     private Instant fechaPrestamo;
     private Instant fechDevolucion;
 
-    public Prestamo(int id, int idLibro, String estudiante, Instant fechaPrestamo, Instant fechDevolucion) {
-        this.id = id;
+    public NuevoPrestamoDTO(int idLibro, String estudiante, Instant fechaPrestamo, Instant fechDevolucion) {
         this.idLibro = idLibro;
         this.estudiante = estudiante;
         this.fechaPrestamo = fechaPrestamo;
         this.fechDevolucion = fechDevolucion;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public int getIdLibro() {
