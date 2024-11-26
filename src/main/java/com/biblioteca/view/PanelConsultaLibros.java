@@ -68,9 +68,16 @@ public class PanelConsultaLibros extends JPanel implements Observer {
 
         // Add listeners as before
         tablaLibros.getSelectionModel().addListSelectionListener(e -> {
-            boolean filaSeleccionada = tablaLibros.getSelectedRow() != -1;
-            btnSolicitarPrestamo.setEnabled(filaSeleccionada);
-            btnGestionarDevolucion.setEnabled(filaSeleccionada);
+            int selectedRow = tablaLibros.getSelectedRow();
+            if (selectedRow != -1) {
+                String estado = tablaLibros.getValueAt(selectedRow, 5).toString();
+
+                btnSolicitarPrestamo.setEnabled(estado.equals(EstadoLibro.DISPONIBLE.toString()));
+                btnGestionarDevolucion.setEnabled(estado.equals(EstadoLibro.PRESTADO.toString()));
+            } else {
+                btnSolicitarPrestamo.setEnabled(false);
+                btnGestionarDevolucion.setEnabled(false);
+            }
         });
 
         filtroEstado.addActionListener(e -> aplicarFiltro());
